@@ -1463,6 +1463,11 @@ class WP_JSON_Posts {
 			$post['post_format'] = $data['post_format'];
 		}
 
+		// Taxonomy terms
+    if ( ! empty( $data['terms_names'] ) ) {
+      $post['tax_input'] = $data['terms_names']; 
+    }
+
 		// Pre-insert hook
 		$can_insert = apply_filters( 'json_pre_insert_post', true, $post, $data, $update );
 

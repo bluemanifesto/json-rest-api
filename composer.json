@@ -1,0 +1,12 @@
+{
+    "name": "wpackagist-plugin/json-rest-api",
+    "description": "This WordPress plugin is a fork from the wp-api plugin.",
+    "type": "wordpress-plugin",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jan Metten Van der Meer",
+            "email": "janmetten@hoppinger.com"
+        }
+    ]
+}
