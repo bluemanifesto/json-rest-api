@@ -1465,6 +1465,10 @@ class WP_JSON_Posts {
 
 		// Taxonomy terms
     if ( ! empty( $data['terms_names'] ) ) {
+    	if ( ! empty( $data['terms_names']['category'])) {
+      	// replace category name with id
+        $data['terms_names']['category'] = $this->get_or_create_category_id($data['terms_names']['category'], null);
+      }
       $post['tax_input'] = $data['terms_names']; 
     }
 
@@ -1626,4 +1630,11 @@ class WP_JSON_Posts {
 
 		return apply_filters( 'json_prepare_comment', $data, $comment, $context );
 	}
+
+	public function get_or_create_category_id($category_name, $parent) {
+	  if (! $category = get_term_by('name', $category_name, 'category')) {
+		  return wp_create_category($category_name, $parent);
+	  }
+	  return $category->term_id;
+  }
 }
