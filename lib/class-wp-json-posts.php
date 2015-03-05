@@ -1168,10 +1168,36 @@ class WP_JSON_Posts {
 		$meta_key = wp_slash( $data['key'] );
 		$value    = wp_slash( $data['value'] );
 
-		$result = add_post_meta( $id, $meta_key, $value );
+    // repeater acf field value is array 
+    // this expects repeater field with values containing 
+    // array with one item with key value pair
+    // key is name of repeater subfield
+		if ( is_array($value) ) {
+			if (!empty($value)) {
+			  $result = add_post_meta($id, $meta_key, count($value));
+   		  if ( ! $result ) {
+	  		  return new WP_Error( 'json_meta_could_not_add', __( 'Could not add post meta.' . $meta_key ), array( 'status' => 400 ) );
+		    }
+			  $i = 0;
+			  foreach ($value as $repeater_subvalue) {
+			  	$subvalue = reset($repeater_subvalue);
+			  	error_log('key= ' .key($repeater_subvalue));
+			  	error_log('value= ' . $subvalue);
 
-		if ( ! $result ) {
-			return new WP_Error( 'json_meta_could_not_add', __( 'Could not add post meta.' ), array( 'status' => 400 ) );
+			  	$result = add_post_meta($id, $meta_key . '_' . $i . '_' .key($repeater_subvalue), $subvalue );
+   		    if ( ! $result ) {
+	  		    return new WP_Error( 'json_meta_could_not_add', __( 'Could not add post meta.'.$meta_key.'_' .$i . '_'. key($repeater_subvalue) ), array( 'status' => 400 ) );
+		      }
+				  $i++;
+			  }
+      } else {
+			  $result = add_post_meta($id, $meta_key, 0);
+      }
+		} else {
+  		$result = add_post_meta( $id, $meta_key, $value );
+   		if ( ! $result ) {
+	  		return new WP_Error( 'json_meta_could_not_add', __( 'Could not add post meta.' ), array( 'status' => 400 ) );
+		  }
 		}
 
 		$response = json_ensure_response( $this->get_meta( $id, $result ) );
