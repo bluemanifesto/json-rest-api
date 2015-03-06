@@ -1111,7 +1111,7 @@ class WP_JSON_Posts {
 	 * @return boolean Whether the data is valid or not
 	 */
 	protected function is_valid_meta_data( $data ) {
-		if ( is_array( $data ) || is_object( $data ) || is_serialized( $data ) ) {
+		if ( is_object( $data ) || is_serialized( $data ) ) {
 			return false;
 		}
 
