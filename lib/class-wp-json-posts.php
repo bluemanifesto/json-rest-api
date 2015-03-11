@@ -1224,6 +1224,8 @@ class WP_JSON_Posts {
 
 
   public function get_acf_key_field($meta_key) {
+  	// This is hardcoded due to time contraints 
+  	// mappings come from repo vakmedianet-structure field_groups
   	$acf_fields = array(
   		'author' => 'field_54e4a8e224d21',
   		'main_image' => 'field_54e4a8eb24d22',
