@@ -1211,7 +1211,7 @@ class WP_JSON_Posts {
 	}
 
 	public function add_meta_acf_field($id, $meta_key, $value){
-		$acf_key = get_acf_key_field($meta_key);
+		$acf_key = $this->get_acf_key_field($meta_key);
 		if ($acf_key !== false) {
 			$result = add_post_meta($id, '_'.$meta_key, $acf_key );
 			if ( !$result ) {
@@ -1222,6 +1222,25 @@ class WP_JSON_Posts {
   	return $result;
 	}
 
+
+  public function get_acf_key_field($meta_key) {
+  	$acf_fields = array(
+  		'author' => 'field_54e4a8e224d21',
+  		'main_image' => 'field_54e4a8eb24d22',
+  		'friendly_url' => 'field_54e4a8f424d23',
+  		'carousel_images' => 'field_54f5abafecc06',
+  		'carousel_image' => 'field_54f5abe7ecc07',
+  		'pdfs' => 'field_54f958731c667',
+  		'pdf' => 'field_54f958851c668',
+  		'category' => 'field_54ede9a4c3500',
+  		'tags' => 'field_54ede9e6c3501',
+  		);
+  	$field = $acf_fields[$meta_key];
+  	if ( empty($field)) {
+  		return false;
+  	}
+  	return $field;
+  }
 	/**
 	 * Delete meta from a post
 	 *
