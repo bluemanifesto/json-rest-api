@@ -966,8 +966,8 @@ class WP_JSON_Posts {
 			$value = unserialize( $value );
 		}
 
-		// Don't expose serialized data
-		if ( is_serialized( $value ) || ! is_string( $value ) ) {
+		// Do expose serialized data
+		if (  ! is_string( $value ) ) {
 			return new WP_Error( 'json_meta_protected', sprintf( __( '%s contains serialized data.'), $key ), array( 'status' => 403 ) );
 		}
 
@@ -1104,14 +1104,14 @@ class WP_JSON_Posts {
 	/**
 	 * Check if the data provided is valid data
 	 *
-	 * Excludes serialized data from being sent via the API.
+	 * Excludes object data from being sent via the API.
 	 *
 	 * @see https://github.com/WP-API/WP-API/pull/68
 	 * @param mixed $data Data to be checked
 	 * @return boolean Whether the data is valid or not
 	 */
 	protected function is_valid_meta_data( $data ) {
-		if ( is_object( $data ) || is_serialized( $data ) ) {
+		if ( is_object( $data ) ) {
 			return false;
 		}
 
@@ -1174,27 +1174,25 @@ class WP_JSON_Posts {
     // key is name of repeater subfield
 		if ( is_array($value) ) {
 			if (!empty($value)) {
-			  $result = add_post_meta($id, $meta_key, count($value));
+			  $result = $this->add_meta_acf_field($id, $meta_key, count($value));
    		  if ( ! $result ) {
 	  		  return new WP_Error( 'json_meta_could_not_add', __( 'Could not add post meta.' . $meta_key ), array( 'status' => 400 ) );
 		    }
 			  $i = 0;
 			  foreach ($value as $repeater_subvalue) {
 			  	$subvalue = reset($repeater_subvalue);
-			  	error_log('key= ' .key($repeater_subvalue));
-			  	error_log('value= ' . $subvalue);
 
-			  	$result = add_post_meta($id, $meta_key . '_' . $i . '_' .key($repeater_subvalue), $subvalue );
+			  	$result = $this->add_meta_acf_field($id, $meta_key . '_' . $i . '_' .key($repeater_subvalue), $subvalue );
    		    if ( ! $result ) {
 	  		    return new WP_Error( 'json_meta_could_not_add', __( 'Could not add post meta.'.$meta_key.'_' .$i . '_'. key($repeater_subvalue) ), array( 'status' => 400 ) );
 		      }
 				  $i++;
 			  }
       } else {
-			  $result = add_post_meta($id, $meta_key, 0);
+			  $result = $this->add_meta_acf_field($id, $meta_key, 0);
       }
 		} else {
-  		$result = add_post_meta( $id, $meta_key, $value );
+  		$result = $this->add_meta_acf_field( $id, $meta_key, $value );
    		if ( ! $result ) {
 	  		return new WP_Error( 'json_meta_could_not_add', __( 'Could not add post meta.' ), array( 'status' => 400 ) );
 		  }
@@ -1210,6 +1208,18 @@ class WP_JSON_Posts {
 		$response->header( 'Location', json_url( '/posts/' . $id . '/meta/' . $result ) );
 
 		return $response;
+	}
+
+	public function add_meta_acf_field($id, $meta_key, $value){
+		$acf_key = get_acf_key_field($meta_key);
+		if ($acf_key !== false) {
+			$result = add_post_meta($id, '_'.$meta_key, $acf_key );
+			if ( !$result ) {
+				return $result;
+			}
+		}
+  	$result = add_post_meta( $id, $meta_key, $value );
+  	return $result;
 	}
 
 	/**
@@ -1493,7 +1503,7 @@ class WP_JSON_Posts {
     if ( ! empty( $data['terms_names'] ) ) {
     	if ( ! empty( $data['terms_names']['category'])) {
       	// replace category name with id
-        $data['terms_names']['category'] = $this->get_or_create_category_id($data['terms_names']['category'], null);
+        $data['terms_names']['category'] = $this->get_or_create_term_id($data['terms_names']['category'], null, 'category');
       }
       $post['tax_input'] = $data['terms_names']; 
     }
@@ -1517,6 +1527,34 @@ class WP_JSON_Posts {
 		if ( ! $update ) {
 			$post['ID'] = $post_ID;
 		}
+
+		// add taxonomy terms to meta 
+    if ( ! empty( $data['terms_names'] ) ) {
+    	if ( ! empty( $data['terms_names']['category'])) {
+        $meta_array = array(
+        	'key' => 'category',
+        	'value' => $data['terms_names']['category']
+        	);
+        $result = $this->add_meta( $post_ID, $meta_array );
+  			if ( is_wp_error( $result ) ) {
+  				return $result;
+  			}
+      }
+    	if ( ! empty( $data['terms_names']['post_tag'])) {
+    		$tags = array();
+    		foreach ($data['terms_names']['post_tag'] as $tag_name) {
+    			$tags[] = (string)$this->get_or_create_term_id($tag_name, null, 'post_tag');
+    		}
+        $meta_array = array(
+        	'key' => 'tags',
+        	'value' => serialize($tags)
+        	);
+        $result = $this->add_meta( $post_ID, $meta_array );
+  			if ( is_wp_error( $result ) ) {
+  				return $result;
+  			}
+      }
+    }
 
 		// Post meta
 		if ( ! empty( $data['post_meta'] ) ) {
@@ -1657,8 +1695,8 @@ class WP_JSON_Posts {
 		return apply_filters( 'json_prepare_comment', $data, $comment, $context );
 	}
 
-	public function get_or_create_category_id($category_name, $parent) {
-	  if (! $category = get_term_by('name', $category_name, 'category')) {
+	public function get_or_create_term_id($category_name, $parent, $taxonomy) {
+	  if (! $category = get_term_by('name', $category_name, $taxonomy)) {
 		  return wp_create_category($category_name, $parent);
 	  }
 	  return $category->term_id;
