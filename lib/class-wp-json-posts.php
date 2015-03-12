@@ -1182,7 +1182,7 @@ class WP_JSON_Posts {
 			  foreach ($value as $repeater_subvalue) {
 			  	$subvalue = reset($repeater_subvalue);
 
-			  	$result = $this->add_meta_acf_field($id, $meta_key . '_' . $i . '_' .key($repeater_subvalue), $subvalue );
+			  	$result = $this->add_meta_acf_field($id, $meta_key . '_' . $i . '_' .key($repeater_subvalue), $subvalue, key($repeater_subvalue));
    		    if ( ! $result ) {
 	  		    return new WP_Error( 'json_meta_could_not_add', __( 'Could not add post meta.'.$meta_key.'_' .$i . '_'. key($repeater_subvalue) ), array( 'status' => 400 ) );
 		      }
@@ -1210,8 +1210,12 @@ class WP_JSON_Posts {
 		return $response;
 	}
 
-	public function add_meta_acf_field($id, $meta_key, $value){
-		$acf_key = $this->get_acf_key_field($meta_key);
+	public function add_meta_acf_field($id, $meta_key, $value, $sub_meta_key = false){
+		if (! $sub_meta_key) {
+  		$acf_key = $this->get_acf_key_field($meta_key);
+		} else {
+  		$acf_key = $this->get_acf_key_field($sub_meta_key);
+		}
 		if ($acf_key !== false) {
 			$result = add_post_meta($id, '_'.$meta_key, $acf_key );
 			if ( !$result ) {
