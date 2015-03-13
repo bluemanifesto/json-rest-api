@@ -1168,8 +1168,8 @@ class WP_JSON_Posts {
 		$meta_key = wp_slash( $data['key'] );
 		$value    = wp_slash( $data['value'] );
 
-    // repeater acf field value is array 
-    // this expects repeater field with values containing 
+    // repeater acf field value is array
+    // this expects repeater field with values containing
     // array with one item with key value pair
     // key is name of repeater subfield
 		if ( is_array($value) ) {
@@ -1228,7 +1228,7 @@ class WP_JSON_Posts {
 
 
   public function get_acf_key_field($meta_key) {
-  	// This is hardcoded due to time contraints 
+  	// This is hardcoded due to time contraints
   	// mappings come from repo vakmedianet-structure field_groups
   	$acf_fields = array(
   		'author' => 'field_54e4a8e224d21',
@@ -1240,6 +1240,7 @@ class WP_JSON_Posts {
   		'pdf' => 'field_54f958851c668',
   		'category' => 'field_54ede9a4c3500',
   		'tags' => 'field_54ede9e6c3501',
+  		'google_news_id' => 'field_5502c3df8f746',
   		);
   	$field = $acf_fields[$meta_key];
   	if ( empty($field)) {
@@ -1530,7 +1531,7 @@ class WP_JSON_Posts {
       	// replace category name with id
         $data['terms_names']['category'] = $this->get_or_create_term_id($data['terms_names']['category'], 'category');
       }
-      $post['tax_input'] = $data['terms_names']; 
+      $post['tax_input'] = $data['terms_names'];
     }
 
 		// Pre-insert hook
@@ -1553,7 +1554,7 @@ class WP_JSON_Posts {
 			$post['ID'] = $post_ID;
 		}
 
-		// add taxonomy terms to meta 
+		// add taxonomy terms to meta
     if ( ! empty( $data['terms_names'] ) ) {
     	if ( ! empty( $data['terms_names']['category'])) {
         $meta_array = array(
