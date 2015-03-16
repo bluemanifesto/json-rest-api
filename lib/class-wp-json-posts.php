@@ -1241,6 +1241,9 @@ class WP_JSON_Posts {
   		'category' => 'field_54ede9a4c3500',
   		'tags' => 'field_54ede9e6c3501',
   		);
+  	if (! array_key_exists($meta_key, $acf_fields) ) {
+  		return false;
+  	}
   	$field = $acf_fields[$meta_key];
   	if ( empty($field)) {
   		return false;
