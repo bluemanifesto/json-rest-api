@@ -98,6 +98,10 @@ class WP_JSON_Media extends WP_JSON_Posts {
 		$data['source']          = wp_get_attachment_url( $post['ID'] );
 		$data['is_image']        = wp_attachment_is_image( $post['ID'] );
 		$data['attachment_meta'] = wp_get_attachment_metadata( $post['ID'] );
+		$image_meta              = get_post_meta( $post['ID'], '_wp_attachment_image_alt', true );
+		$data['attachment_meta']['alt'] = $image_meta;
+		$data['attachment_meta']['caption'] = $post['post_excerpt'];
+		$data['attachment_meta']['description'] = $post['post_content'];
 
 		// Ensure empty meta is an empty object
 		if ( empty( $data['attachment_meta'] ) ) {
