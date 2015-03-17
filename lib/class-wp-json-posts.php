@@ -1168,8 +1168,8 @@ class WP_JSON_Posts {
 		$meta_key = wp_slash( $data['key'] );
 		$value    = wp_slash( $data['value'] );
 
-    // repeater acf field value is array 
-    // this expects repeater field with values containing 
+    // repeater acf field value is array
+    // this expects repeater field with values containing
     // array with one item with key value pair
     // key is name of repeater subfield
 		if ( is_array($value) ) {
@@ -1228,7 +1228,7 @@ class WP_JSON_Posts {
 
 
   public function get_acf_key_field($meta_key) {
-  	// This is hardcoded due to time contraints 
+  	// This is hardcoded due to time contraints
   	// mappings come from repo vakmedianet-structure field_groups
   	$acf_fields = array(
   		'author' => 'field_54e4a8e224d21',
@@ -1485,12 +1485,21 @@ class WP_JSON_Posts {
 
 		// Content and excerpt
 		if ( ! empty( $data['content_raw'] ) ) {
-			$post['post_content'] = $data['content_raw'];
+			 $post['post_content'] = $data['content_raw'];
+		}
+
+		if ( ! empty( $data['image_meta_description'] ) ) {
+			 $post['post_content'] = $data['image_meta_description'];
 		}
 
 		if ( ! empty( $data['excerpt_raw'] ) ) {
-			$post['post_excerpt'] = $data['excerpt_raw'];
+			 $post['post_excerpt'] = $data['excerpt_raw'];
 		}
+
+		if ( ! empty( $data['image_meta_caption'] ) ) {
+			 $post['post_excerpt'] = $data['image_meta_caption'];
+		}
+
 
 		// Parent
 		if ( ! empty( $data['parent'] ) ) {
@@ -1533,7 +1542,7 @@ class WP_JSON_Posts {
       	// replace category name with id
         $data['terms_names']['category'] = $this->get_or_create_term_id($data['terms_names']['category'], 'category');
       }
-      $post['tax_input'] = $data['terms_names']; 
+      $post['tax_input'] = $data['terms_names'];
     }
 
 		// Pre-insert hook
@@ -1556,7 +1565,11 @@ class WP_JSON_Posts {
 			$post['ID'] = $post_ID;
 		}
 
-		// add taxonomy terms to meta 
+    if (! empty( $data['image_meta_alt'])) {
+  	  $result = add_post_meta( $post['ID'], '_wp_attachment_image_alt', $data['image_meta_alt'] );
+    }
+
+		// add taxonomy terms to meta
     if ( ! empty( $data['terms_names'] ) ) {
     	if ( ! empty( $data['terms_names']['category'])) {
         $meta_array = array(
