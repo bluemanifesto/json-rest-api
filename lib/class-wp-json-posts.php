@@ -1240,6 +1240,7 @@ class WP_JSON_Posts {
   		'pdf' => 'field_54f958851c668',
   		'category' => 'field_54ede9a4c3500',
   		'tags' => 'field_54ede9e6c3501',
+  		'content_type' => 'field_5506f9247c2de',
   		);
   	if (! array_key_exists($meta_key, $acf_fields) ) {
   		return false;
