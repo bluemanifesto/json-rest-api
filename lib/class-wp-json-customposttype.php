@@ -196,6 +196,8 @@ abstract class WP_JSON_CustomPostType extends WP_JSON_Posts {
 		$_post = parent::prepare_post( $post, $context );
 
 		// Override entity meta keys with the correct links
+    error_log($post['ID'], 0);
+    error_log($post['post_author'], 0);
 		$_post['meta'] = array(
 			'links' => array(
 				'self'            => json_url( $this->base . '/' . $post['ID'] ),
