@@ -317,7 +317,7 @@ class WP_JSON_Taxonomies {
 		$base_url = '/taxonomies/' . $term->taxonomy . '/terms';
 
 		$data = array(
-			'ID'          => (int) $term->term_taxonomy_id,
+			'ID'          => (int) $term->term_id,
 			'name'        => $term->name,
 			'slug'        => $term->slug,
 			'description' => $term->description,
