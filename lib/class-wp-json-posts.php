@@ -1217,12 +1217,12 @@ class WP_JSON_Posts {
   		$acf_key = $this->get_acf_key_field($sub_meta_key);
 		}
 		if ($acf_key !== false) {
-			$result = add_post_meta($id, '_'.$meta_key, $acf_key );
+			$result = update_post_meta($id, '_'.$meta_key, $acf_key );
 			if ( !$result ) {
 				return $result;
 			}
 		}
-  	$result = add_post_meta( $id, $meta_key, $value );
+  	$result = update_post_meta( $id, $meta_key, $value );
   	return $result;
 	}
 
@@ -1568,14 +1568,14 @@ class WP_JSON_Posts {
 		}
 
     if (! empty( $data['image_meta_alt'])) {
-  	  $result = add_post_meta( $post['ID'], '_wp_attachment_image_alt', $data['image_meta_alt'] );
+  	  $result = update_post_meta( $post['ID'], '_wp_attachment_image_alt', $data['image_meta_alt'] );
   		if ( is_wp_error( $result ) ) {
   		  return $result;
   		}
     }
 
     if (! empty( $data['page_template'])) {
-  	  $result = add_post_meta( $post['ID'], '_wp_page_template', $data['page_template'] );
+  	  $result = update_post_meta( $post['ID'], '_wp_page_template', $data['page_template'] );
   		if ( is_wp_error( $result ) ) {
   		  return $result;
   		}
