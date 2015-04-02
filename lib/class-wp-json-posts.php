@@ -1217,15 +1217,22 @@ class WP_JSON_Posts {
   		$acf_key = $this->get_acf_key_field($sub_meta_key);
 		}
 		if ($acf_key !== false) {
-			$result = update_post_meta($id, '_'.$meta_key, $acf_key );
+			$result = $this->really_update_post_meta($id, '_'.$meta_key, $acf_key);
 			if ( !$result ) {
 				return $result;
-			}
+ 			}
 		}
-  	$result = update_post_meta( $id, $meta_key, $value );
-  	return $result;
+
+    return $this->really_update_post_meta($id, $meta_key, $value);
 	}
 
+  function really_update_post_meta($id, $key, $value) {
+		$old_value = get_post_meta($id, $key, TRUE);
+   	if (empty($old_value) || $old_value != $value) {
+  		$result = update_post_meta($id, $key, $value);
+		}
+    return $this->get_mid_by_key($id, $key);
+  }
 
   public function get_acf_key_field($meta_key) {
   	// This is hardcoded due to time contraints
@@ -1568,14 +1575,14 @@ class WP_JSON_Posts {
 		}
 
     if (! empty( $data['image_meta_alt'])) {
-  	  $result = update_post_meta( $post['ID'], '_wp_attachment_image_alt', $data['image_meta_alt'] );
+  	  $result = $this->really_update_post_meta( $post['ID'], '_wp_attachment_image_alt', $data['image_meta_alt'] );
   		if ( is_wp_error( $result ) ) {
   		  return $result;
   		}
     }
 
     if (! empty( $data['page_template'])) {
-  	  $result = update_post_meta( $post['ID'], '_wp_page_template', $data['page_template'] );
+  	  $result = $this->really_update_post_meta( $post['ID'], '_wp_page_template', $data['page_template'] );
   		if ( is_wp_error( $result ) ) {
   		  return $result;
   		}
@@ -1763,5 +1770,14 @@ class WP_JSON_Posts {
 		  return $term['term_id'];
 	  }
 	  return $term->term_id;
+  }
+
+ function get_mid_by_key( $post_id, $meta_key ) {
+   global $wpdb;
+   $mid = $wpdb->get_var( $wpdb->prepare("SELECT meta_id FROM $wpdb->postmeta WHERE post_id = %d AND meta_key = %s", $post_id, $meta_key) );
+   if( $mid != '' )
+     return (int)$mid;
+
+   return false;
   }
 }
