@@ -1551,6 +1551,24 @@ class WP_JSON_Posts {
       	// replace category name with id
         $data['terms_names']['category'] = $this->get_or_create_term_id($data['terms_names']['category'], 'category');
       }
+      if ( ! empty( $data['terms_names']['subcategory'])) {
+      	if ($update) {
+      		$tags = wp_get_post_tags($data['ID']);
+      		foreach ($tags as $tag) {
+      			$data['terms_names']['post_tag'][] = $tag->name;
+      		}
+      	}
+      	$term = get_term_by('slug', htmlspecialchars($data['terms_names']['subcategory']['slug']), 'post_tag');
+      	if (! $term) {
+      		if (!empty($data['terms_names']['subcategory']['name'])) {
+        		$data['terms_names']['post_tag'][] = $data['terms_names']['subcategory']['name'];
+        	} else {
+        		$data['terms_names']['post_tag'][] = $data['terms_names']['subcategory']['slug'];
+        	}
+      	}
+      	unset($data['terms_names']['subcategory']);
+      	$data['terms_names']['post_tag'] = array_unique($data['terms_names']['post_tag']);
+      }
       $post['tax_input'] = $data['terms_names'];
     }
 
@@ -1608,6 +1626,22 @@ class WP_JSON_Posts {
         $meta_array = array(
         	'key' => 'tags',
         	'value' => serialize($tags)
+        	);
+        $result = $this->add_meta( $post_ID, $meta_array );
+  			if ( is_wp_error( $result ) ) {
+  				return $result;
+  			}
+      }
+    	if ( ! empty( $data['terms_names']['subcategory'])) {
+    		$tags = wp_get_post_tags($post_ID);
+    		$tagids = array();
+        $tagids[] = $this->get_or_create_term_id_with_slug($data['terms_names']['subcategory'], 'post_tag');
+        foreach ($tags as $tag) {
+        	$tagids[] = $tag->term_id;
+        }
+        $meta_array = array(
+        	'key' => 'tags',
+        	'value' => serialize($tagids),
         	);
         $result = $this->add_meta( $post_ID, $meta_array );
   			if ( is_wp_error( $result ) ) {
@@ -1764,12 +1798,32 @@ class WP_JSON_Posts {
 		return apply_filters( 'json_prepare_comment', $data, $comment, $context );
 	}
 
-	public function get_or_create_term_id($term_name, $taxonomy) {
-	  if (! $term = get_term_by('name', htmlspecialchars($term_name), $taxonomy)) {
+	public function get_or_create_term_id($term_name, $taxonomy, $field='name') {
+	  if (! $term = get_term_by($field, htmlspecialchars($term_name), $taxonomy)) {
 	  	$term = wp_insert_term(htmlspecialchars($term_name), $taxonomy);
 		  return $term['term_id'];
 	  }
 	  return $term->term_id;
+  }
+
+	public function get_or_create_term_id_with_slug($this_term, $taxonomy) {
+		if (! empty($this_term['slug'])) {
+	    if (! $term = get_term_by('slug', $this_term['slug'], $taxonomy)) {
+	    	if (! empty($this_term['name'])) {
+	    		$name = $this_term['name'];
+	    	} else {
+	    		$name = $this_term['slug'];
+	    	}
+	  	  $term = wp_insert_term(htmlspecialchars($name, $taxonomy, array('slug' => $this_term['slug'])));
+		    return $term['term_id'];
+	  	}
+		} else {
+	    if (! $term = get_term_by($field, htmlspecialchars($this_term['name']), $taxonomy)) {
+	  	  $term = wp_insert_term(htmlspecialchars($this_term['name']), $taxonomy);
+		    return $term['term_id'];
+	    }
+	    return $term->term_id;
+	  }
   }
 
  function get_mid_by_key( $post_id, $meta_key ) {
