@@ -1569,7 +1569,10 @@ class WP_JSON_Posts {
         	} else {
         		$data['terms_names']['post_tag'][] = $data['terms_names']['subcategory']['slug'];
         	}
+      	} else {
+        	$data['terms_names']['post_tag'][] = $term->name;
       	}
+
       	unset($data['terms_names']['subcategory']);
       	if (!empty($data['terms_names']['post_tag'])) {
         	$data['terms_names']['post_tag'] = array_unique($data['terms_names']['post_tag']);
