@@ -1549,7 +1549,11 @@ class WP_JSON_Posts {
     if ( ! empty( $data['terms_names'] ) ) {
     	if ( ! empty( $data['terms_names']['category'])) {
       	// replace category name with id
-        $data['terms_names']['category'] = $this->get_or_create_term_id($data['terms_names']['category'], 'category');
+        $result = $this->get_or_create_term_id($data['terms_names']['category'], 'category');
+    		if ( is_wp_error( $result ) ) {
+  		    return $result;
+  		  }
+        $data['terms_names']['category'] = $result;
       }
       if ( ! empty( $data['terms_names']['subcategory'])) {
       	if ($update) {
@@ -1567,7 +1571,9 @@ class WP_JSON_Posts {
         	}
       	}
       	unset($data['terms_names']['subcategory']);
-      	$data['terms_names']['post_tag'] = array_unique($data['terms_names']['post_tag']);
+      	if (!empty($data['terms_names']['post_tag'])) {
+        	$data['terms_names']['post_tag'] = array_unique($data['terms_names']['post_tag']);
+      	}
       }
       $post['tax_input'] = $data['terms_names'];
     }
@@ -1621,7 +1627,11 @@ class WP_JSON_Posts {
     	if ( ! empty( $data['terms_names']['post_tag'])) {
     		$tags = array();
     		foreach ($data['terms_names']['post_tag'] as $tag_name) {
-    			$tags[] = (string)$this->get_or_create_term_id($tag_name, 'post_tag');
+    			$result = $this->get_or_create_term_id($tag_name, 'post_tag');
+    			if ( is_wp_error( $result ) ) {
+  				  return $result;
+  		  	}
+    			$tags[] = (string)$result;
     		}
         $meta_array = array(
         	'key' => 'tags',
@@ -1635,7 +1645,11 @@ class WP_JSON_Posts {
     	if ( ! empty( $data['terms_names']['subcategory'])) {
     		$tags = wp_get_post_tags($post_ID);
     		$tagids = array();
-        $tagids[] = $this->get_or_create_term_id_with_slug($data['terms_names']['subcategory'], 'post_tag');
+        $result = $this->get_or_create_term_id_with_slug($data['terms_names']['subcategory'], 'post_tag');
+    		if ( is_wp_error( $result ) ) {
+  				return $result;
+  		  }
+        $tagids[] = $result;
         foreach ($tags as $tag) {
         	$tagids[] = $tag->term_id;
         }
@@ -1798,10 +1812,16 @@ class WP_JSON_Posts {
 		return apply_filters( 'json_prepare_comment', $data, $comment, $context );
 	}
 
-	public function get_or_create_term_id($term_name, $taxonomy, $field='name') {
+	public function get_or_create_term_id($term_name, $taxonomy, $field = 'name') {
 	  if (! $term = get_term_by($field, htmlspecialchars($term_name), $taxonomy)) {
-	  	$term = wp_insert_term(htmlspecialchars($term_name), $taxonomy);
-		  return $term['term_id'];
+	  	// for some reason terms with & and other special don't always get found
+	    if (! $term = get_term_by($field, $term_name, $taxonomy)) {
+		  	$term = wp_insert_term(htmlspecialchars($term_name), $taxonomy);
+		  	if (is_wp_error($term)) {
+		  		return $term;
+		    }
+			  return $term['term_id'];
+		  }
 	  }
 	  return $term->term_id;
   }
@@ -1814,7 +1834,10 @@ class WP_JSON_Posts {
 	    	} else {
 	    		$name = $this_term['slug'];
 	    	}
-	  	  $term = wp_insert_term(htmlspecialchars($name, $taxonomy, array('slug' => $this_term['slug'])));
+	  	  $term = wp_insert_term(htmlspecialchars($name), $taxonomy, array('slug' => $this_term['slug']));
+    	  if (is_wp_error($term)) {
+	    		return $term;
+	      }
 		    return $term['term_id'];
 	  	}
 		} else {
