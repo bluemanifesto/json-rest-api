@@ -1816,6 +1816,7 @@ class WP_JSON_Posts {
 	}
 
 	public function get_or_create_term_id($term_name, $taxonomy, $field = 'name') {
+		$term_name = preg_replace('!\s+!', ' ', $term_name); // replace multiple whitespace with single
 	  if (! $term = get_term_by($field, htmlspecialchars($term_name), $taxonomy)) {
 	  	// for some reason terms with & and other special don't always get found
 	    if (! $term = get_term_by($field, $term_name, $taxonomy)) {
