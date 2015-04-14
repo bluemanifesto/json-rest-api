@@ -966,10 +966,6 @@ class WP_JSON_Posts {
 			$value = unserialize( $value );
 		}
 
-		// Do expose serialized data
-		if (  ! is_string( $value ) ) {
-			return new WP_Error( 'json_meta_protected', sprintf( __( '%s contains serialized data.'), $key ), array( 'status' => 403 ) );
-		}
 
 		$meta = array(
 			'ID'    => (int) $ID,
