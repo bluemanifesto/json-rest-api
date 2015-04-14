@@ -1172,7 +1172,7 @@ class WP_JSON_Posts {
     // this expects repeater field with values containing
     // array with one item with key value pair
     // key is name of repeater subfield
-		if ( is_array($value) ) {
+		if ( $meta_key == 'carousel_images' || $meta_key == 'pdfs') {
 			if (!empty($value)) {
 			  $result = $this->add_meta_acf_field($id, $meta_key, count($value));
    		  if ( ! $result ) {
@@ -1638,7 +1638,7 @@ class WP_JSON_Posts {
     		}
         $meta_array = array(
         	'key' => 'tags',
-        	'value' => serialize($tags)
+        	'value' => $tags
         	);
         $result = $this->add_meta( $post_ID, $meta_array );
   			if ( is_wp_error( $result ) ) {
@@ -1658,7 +1658,7 @@ class WP_JSON_Posts {
         }
         $meta_array = array(
         	'key' => 'tags',
-        	'value' => serialize($tagids),
+        	'value' => $tagids,
         	);
         $result = $this->add_meta( $post_ID, $meta_array );
   			if ( is_wp_error( $result ) ) {
