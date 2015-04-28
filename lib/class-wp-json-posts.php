@@ -1246,6 +1246,8 @@ class WP_JSON_Posts {
   		'content_type' => 'field_5506f9247c2de',
   		'google_news_id' => 'field_5502c3df8f746',
   		'video_url' => 'field_553a502789fde',
+  		'custom_url' => 'field_553f54143a5fc',
+  		'video_url_type' => 'field_553f54733a5fd',
   		);
   	if (! array_key_exists($meta_key, $acf_fields) ) {
   		return false;
