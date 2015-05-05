@@ -241,7 +241,7 @@ class WP_JSON_Posts {
 		if ( 'inherit' === $post['post_status'] && $post['post_parent'] > 0 ) {
 			$parent = get_post( $post['post_parent'], ARRAY_A );
 
-			if ( $this->check_read_permission( $parent ) ) {
+			if ( !empty($parent) && $this->check_read_permission( $parent ) ) {
 				return true;
 			}
 		}
@@ -672,7 +672,7 @@ class WP_JSON_Posts {
 
 		$post_type = get_post_type_object( $post['post_type'] );
 
-		if ( ! $this->check_read_permission( $post ) ) {
+		if ( empty($post) || ! $this->check_read_permission( $post ) ) {
 			return new WP_Error( 'json_user_cannot_read', __( 'Sorry, you cannot read this post.' ), array( 'status' => 401 ) );
 		}
 
