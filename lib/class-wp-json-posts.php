@@ -1164,25 +1164,27 @@ class WP_JSON_Posts {
 		$meta_key = wp_slash( $data['key'] );
 		$value    = wp_slash( $data['value'] );
 
-    // repeater acf field value is array
-    // this expects repeater field with values containing
-    // array with one item with key value pair
-    // key is name of repeater subfield
+    // repeater acf field value is passed as an array
+		// each element contains a hash with one or more key/value pairs
 		if ( $meta_key == 'carousel_images' || $meta_key == 'pdfs' || $meta_key == 'social_media') {
 			if (!empty($value)) {
+
+				// First add the repeater field to the current post
 			  $result = $this->add_meta_acf_field($id, $meta_key, count($value));
    		  if ( ! $result ) {
 	  		  return new WP_Error( 'json_meta_could_not_add', __( 'Could not add post meta.' . $meta_key ), array( 'status' => 400 ) );
 		    }
-			  $i = 0;
-			  foreach ($value as $repeater_subvalue) {
-			  	$subvalue = reset($repeater_subvalue);
 
-			  	$result = $this->add_meta_acf_field($id, $meta_key . '_' . $i . '_' .key($repeater_subvalue), $subvalue, key($repeater_subvalue));
-   		    if ( ! $result ) {
-	  		    return new WP_Error( 'json_meta_could_not_add', __( 'Could not add post meta.'.$meta_key.'_' .$i . '_'. key($repeater_subvalue) ), array( 'status' => 400 ) );
-		      }
-				  $i++;
+				// Then loop over each repetition
+				foreach ($value as $i => $repetition) {
+
+					// Each repetition could contain multiple subfields, so loop over those
+					foreach ($repetition as $subfield_key => $subfield_value) {
+						$result = $this->add_meta_acf_field($id, $meta_key . '_' . $i . '_' .$subfield_key, $subfield_value, $subfield_key);
+						if ( ! $result ) {
+							return new WP_Error( 'json_meta_could_not_add', __( 'Could not add post meta.'.$meta_key.'_' .$i . '_'. $subfield_key ), array( 'status' => 400 ) );
+						}
+					}
 			  }
       } else {
 			  $result = $this->add_meta_acf_field($id, $meta_key, 0);
