@@ -1168,7 +1168,7 @@ class WP_JSON_Posts {
     // this expects repeater field with values containing
     // array with one item with key value pair
     // key is name of repeater subfield
-		if ( $meta_key == 'carousel_images' || $meta_key == 'pdfs') {
+		if ( $meta_key == 'carousel_images' || $meta_key == 'pdfs' || $meta_key == 'social_media') {
 			if (!empty($value)) {
 			  $result = $this->add_meta_acf_field($id, $meta_key, count($value));
    		  if ( ! $result ) {
@@ -1248,6 +1248,9 @@ class WP_JSON_Posts {
   		'video_url' => 'field_553a502789fde',
   		'custom_url' => 'field_553f54143a5fc',
   		'video_url_type' => 'field_553f54733a5fd',
+  		'social_media' => 'field_559e4122a6947',
+  		'platform' => 'field_559e43bea6948',
+  		'url' => 'field_559e440fa6949',
   		);
   	if (! array_key_exists($meta_key, $acf_fields) ) {
   		return false;
