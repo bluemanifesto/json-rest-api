@@ -1237,7 +1237,7 @@ class WP_JSON_Posts {
     // mappings come from repo vakmedianet-structure field_groups
     $acf_fields = array(
       'author' => 'field_54e4a8e224d21',
-      'main_image' => 'field_54e4a8eb24d22',
+      // 'main_image' => 'field_54e4a8eb24d22',
       'friendly_url' => 'field_54e4a8f424d23',
       'carousel_images' => 'field_54f5abafecc06',
       'carousel_image' => 'field_54f5abe7ecc07',
@@ -1253,6 +1253,23 @@ class WP_JSON_Posts {
       'social_media' => 'field_559e4122a6947',
       'platform' => 'field_559e43bea6948',
       'url' => 'field_559e440fa6949',
+      'main_image' => 'field_559e401d870d5',
+      'address1' => 'field_55967efba0564',
+      'address2' => 'field_55967f4ea0565',
+      'postcode' => 'field_559688322640b',
+      'city' => 'field_559688672640c',
+      'country' => 'field_559688e62640d',
+      'phone' => 'field_559688fb2640e',
+      'fax' => 'field_5596898a2640f',
+      'company_email' => 'field_559689c026410',
+      'website' => 'field_55968a2d55580',
+      'contact_name' => 'field_55968b0755581',
+      'contact_phone' => 'field_55968b3b55582',
+      'contact_email' => 'field_55968b5955583',
+      'number_of_employees' => 'field_55968ba555584',
+      'number_of_clients' => 'field_559690c955585',
+      'target_industries' => 'field_5596965127d75',
+      'target_regions' => 'field_559697a927d76',
       );
     if (! array_key_exists($meta_key, $acf_fields) ) {
       return false;
