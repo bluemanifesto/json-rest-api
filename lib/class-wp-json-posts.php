@@ -1252,6 +1252,7 @@ class WP_JSON_Posts {
       'video_url_type' => 'field_553f54733a5fd',
 
       # Project custom fields...
+      'author_id' => 'field_568bbee5383fd',
       'address' => 'field_581c9c99a899c',
       'advisor_acoustics' => 'field_581c96e6b827a',
       'advisor_construction' => 'field_581c96c0b8278',
