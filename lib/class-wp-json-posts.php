@@ -1250,6 +1250,7 @@ class WP_JSON_Posts {
       'video_url' => 'field_553a502789fde',
       'custom_url' => 'field_553f54143a5fc',
       'video_url_type' => 'field_553f54733a5fd',
+      'show_link' => 'field_56a2385f45375',
 
       # Project custom fields...
       'author_id' => 'field_568bbee5383fd',
