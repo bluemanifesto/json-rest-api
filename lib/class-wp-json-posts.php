@@ -1281,6 +1281,7 @@ class WP_JSON_Posts {
       'interior_architect' => 'field_581c9719b827e',
       'landscape_architect' => 'field_581c9723b827f',
       'location' => 'field_5813084bf9552',
+      'main_image_caption' => 'field_5836f550f3d8f',
       'net_capacity' => 'field_581c997eb8288',
       'net_floor_area' => 'field_581c995eb8286',
       'pdf_files' => 'field_582475e0b7188',
