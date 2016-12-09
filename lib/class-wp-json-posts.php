@@ -1166,7 +1166,7 @@ class WP_JSON_Posts {
 
     // repeater acf field value is passed as an array
     // each element contains a hash with one or more key/value pairs
-    if ( $meta_key == 'carousel_images' || $meta_key == 'pdfs' || $meta_key == 'social_media') {
+    if ( $meta_key == 'carousel_images' || $meta_key == 'pdfs' || $meta_key == 'project_pdf_files' || $meta_key == 'project_images' || $meta_key == 'social_media') {
       if (!empty($value)) {
 
         // First add the repeater field to the current post
@@ -1285,6 +1285,7 @@ class WP_JSON_Posts {
       'net_capacity' => 'field_581c997eb8288',
       'net_floor_area' => 'field_581c995eb8286',
       'pdf_files' => 'field_582475e0b7188',
+      'pdf_file' => 'field_582475e0b7189',
       'preliminary_design' => 'field_581c9992b828a',
       'program' => 'field_581c9988b8289',
       'project_type' => 'field_581c9f0c4b146',
@@ -1316,6 +1317,7 @@ class WP_JSON_Posts {
       // 'target_industries' => 'field_5596965127d75',
       // 'target_regions' => 'field_559697a927d76',
       );
+
     if (! array_key_exists($meta_key, $acf_fields) ) {
       return false;
     }
