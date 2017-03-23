@@ -1241,7 +1241,7 @@ class WP_JSON_Posts {
       'friendly_url' => 'field_54e4a8f424d23',
       'galleries' => 'field_58d3a1b52a812',
       'gallery_images' => 'field_58d3a1d12a813',
-      'gallery_images' => 'field_58d3a27c2a814',
+      'gallery_image' => 'field_58d3a27c2a814',
       'carousel_images' => 'field_54f5abafecc06',
       'carousel_image' => 'field_54f5abe7ecc07',
       'pdfs' => 'field_54f958731c667',
