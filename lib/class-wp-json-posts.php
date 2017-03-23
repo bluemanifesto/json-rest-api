@@ -1166,7 +1166,7 @@ class WP_JSON_Posts {
 
     // repeater acf field value is passed as an array
     // each element contains a hash with one or more key/value pairs
-    if ( $meta_key == 'carousel_images' || $meta_key == 'pdfs' || $meta_key == 'project_pdf_files' || $meta_key == 'project_images' || $meta_key == 'social_media') {
+    if ( $meta_key == 'carousel_images' || $meta_key == 'pdfs' || $meta_key == 'project_pdf_files' || $meta_key == 'project_images' || $meta_key == 'social_media' || $meta_key == 'galleries' || $meta_key == 'gallery_images' ) {
       if (!empty($value)) {
 
         // First add the repeater field to the current post
