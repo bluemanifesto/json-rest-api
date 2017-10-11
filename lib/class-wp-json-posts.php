@@ -305,6 +305,7 @@ class WP_JSON_Posts {
       return $result;
     }
 
+
     $response = json_ensure_response( $this->get_post( $result ) );
     $response->set_status( 201 );
     $response->header( 'Location', json_url( '/posts/' . $result ) );
@@ -1690,7 +1691,6 @@ class WP_JSON_Posts {
         return $result;
       }
     }
-
     // add taxonomy terms to meta
     if ( ! empty( $data['terms_names'] ) ) {
       if ( ! empty( $data['terms_names']['category'])) {
@@ -1771,6 +1771,7 @@ class WP_JSON_Posts {
     }
 
     do_action( 'json_insert_post', $post, $data, $update );
+    wp_set_post_terms( $post_ID, $data['terms']['knowledgebases'], 'knowledgebase', false );
 
     return $post_ID;
   }
