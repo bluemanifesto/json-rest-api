@@ -1771,7 +1771,9 @@ class WP_JSON_Posts {
     }
 
     do_action( 'json_insert_post', $post, $data, $update );
-    wp_set_post_terms( $post_ID, $data['terms']['knowledgebases'], 'knowledgebase', false );
+    if ( ! empty( $data['terms']['knowledgebases'])) {
+      wp_set_post_terms( $post_ID, $data['terms']['knowledgebases'], 'knowledgebase', false );
+    }
 
     return $post_ID;
   }
